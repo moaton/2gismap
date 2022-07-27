@@ -54,6 +54,8 @@
   </div>
 </template>
 <script>
+const URL = 'http://195.49.212.34:8080' //'http://localhost:8080'
+
 import { ref } from '@vue/reactivity'
 export default {
   props: ['data'],
@@ -71,7 +73,7 @@ export default {
           isLoaded.value = true
           btn.value = 'Закрыть'
         } else {
-          await fetch(`http://localhost:8080/api/legal-entities/${data.id}`).then(res => res.json()).then(res => {
+          await fetch(`${URL}/api/legal-entities/${data.id}`).then(res => res.json()).then(res => {
             items.value = res
             isLoaded.value = true
             btn.value = 'Закрыть'

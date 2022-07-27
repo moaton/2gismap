@@ -8,6 +8,7 @@
 </template>
 
 <script>
+const URL = 'http://195.49.212.34:8080' //'http://localhost:8080'
 import showMore from './components/showMore'
 import { ref } from 'vue'
 export default {
@@ -17,9 +18,9 @@ export default {
   },
   async mounted() {
     
-    await fetch('http://localhost:8080/api/uninhabited-premise').then(res => res.json()).then(data => console.log('uninhabited-premise = ', data))
-    await fetch('http://localhost:8080/api/uninhabited-premise-two').then(res => res.json()).then(data => console.log('uninhabited-premise-two', data))
-    await fetch('http://localhost:8080/api/cash-register-machine').then(res => res.json()).then(data => console.log('cash-register-machine',data))
+    await fetch(URL + '/api/uninhabited-premise').then(res => res.json()).then(data => console.log('uninhabited-premise = ', data))
+    await fetch(URL + '/api/uninhabited-premise-two').then(res => res.json()).then(data => console.log('uninhabited-premise-two', data))
+    await fetch(URL + '/api/cash-register-machine').then(res => res.json()).then(data => console.log('cash-register-machine',data))
     let DG = require('2gis-maps');
     let map = DG.map('map', {
         'center': [43.212534, 76.875994],
@@ -67,7 +68,7 @@ export default {
     async function onClick(e){
       isOpen.value = false
       console.log(e, ' | ', e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
-      await fetch(`http://localhost:8080/api/legal-entities?lat=${e.latlng.lat.toFixed(6)}&lon=${e.latlng.lng.toFixed(6)}`).then(res => res.json()).then(data => {
+      await fetch(`${URL}/api/legal-entities?lat=${e.latlng.lat.toFixed(6)}&lon=${e.latlng.lng.toFixed(6)}`).then(res => res.json()).then(data => {
         legalEntities.value.items = []
         legalEntities.value.address = ''
         console.log('awaitfetch --> data', data)
