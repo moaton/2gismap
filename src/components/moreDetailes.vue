@@ -50,7 +50,7 @@
       <p v-if="!!data.cadastral_number">Кадастровый номер земельного участка: <b>{{data.cadastral_number}}</b></p>
       <p v-if="!!data.real_estate_purpose">Целевое назначение земельного участка: <b>{{data.real_estate_purpose}}</b></p>
     </div>
-    <div v-if="isOpen" class="actions mt-3 d-flex justify-content-end mb-3">
+    <div v-if="isOpen && user.role === 'admin'" class="actions mt-3 d-flex justify-content-end mb-3">
       <button class="btn btn-outline-primary" @click="edit()"><span v-if="isEdit">Сохранить</span><span v-else>Редактировать</span></button>
     </div>
   </div>
@@ -59,10 +59,15 @@
 // const URL = 'http://195.49.212.34:8082'
 const URL = 'http://localhost:8082'
 
-
+import store from '../store'
 import { ref } from '@vue/reactivity'
 export default {
   props: ['data'],
+  computed: {
+    user(){
+      return store.getters.getUser
+    }
+  },
   setup(props, {emit}) {
     let btn = ref('Подробонее...')
     let isLoaded = ref(false)
