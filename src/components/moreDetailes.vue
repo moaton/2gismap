@@ -5,9 +5,9 @@
     </div>
     <div v-if="isOpen && !data.hasOwnProperty('secondary_object_number')">
       <div class="mt-3">
-        <p>Регистрационный номер: <b>{{data.id}}</b></p>
-        <p>Наименование: <b>{{data.name}}</b></p>
-        <p>Квартира: <b>{{data.address_name.replace("кв.", "").split(',').reverse()[0]}}</b></p>
+        <p>Регистрационный номер: <b v-if="!isEdit">{{data.id}}</b><input v-else type="text" class="form-control" :placeholder="data.id"></p>
+        <p>Наименование: <b v-if="!isEdit">{{data.name}}</b><input v-else type="text" class="form-control" :placeholder="data.name"></p>
+        <p>Квартира: <b v-if="!isEdit">{{data.address_name.replace("кв.", "").split(',').reverse()[0]}}</b><input v-else type="text" class="form-control" :placeholder="data.address_name"></p>
       </div>
       <div v-if="isLoaded" class="mb-2">
         <div v-if="items.cashregistermachines.length !== 0 && items !== {} ">
@@ -50,11 +50,15 @@
       <p v-if="!!data.cadastral_number">Кадастровый номер земельного участка: <b>{{data.cadastral_number}}</b></p>
       <p v-if="!!data.real_estate_purpose">Целевое назначение земельного участка: <b>{{data.real_estate_purpose}}</b></p>
     </div>
-
+    <div v-if="isOpen" class="actions mt-3 d-flex justify-content-end mb-3">
+      <button class="btn btn-outline-primary" @click="edit()"><span v-if="isEdit">Сохранить</span><span v-else>Редактировать</span></button>
+    </div>
   </div>
 </template>
 <script>
-const URL = 'http://195.49.212.34:8082' //'http://localhost:8080'
+// const URL = 'http://195.49.212.34:8082'
+const URL = 'http://localhost:8082'
+
 
 import { ref } from '@vue/reactivity'
 export default {
@@ -64,6 +68,13 @@ export default {
     let isLoaded = ref(false)
     let isOpen = ref(false)
     let items = ref({})
+    let isEdit = ref(false)
+    async function edit(){
+      if(!isEdit.value){
+        isEdit.value = true
+        return
+      }
+    }
     async function moreDetailes(data){
       isLoaded.value = false
       if(btn.value === 'Подробонее...'){
@@ -83,6 +94,7 @@ export default {
       }
       btn.value = 'Подробонее...'
       isOpen.value = false
+      isEdit.value = false
       emit('onopen')
     }
     return {
@@ -90,7 +102,9 @@ export default {
       isLoaded,
       items,
       btn,
-      isOpen
+      isOpen,
+      edit,
+      isEdit
     }
   }
 }

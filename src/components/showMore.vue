@@ -1,6 +1,6 @@
 <template>
   <div class="card" style="overflow: scroll;">
-    <div class="d-flex justify-content-between p-3 mb-2" style="border-radius: 0.25rem;border-bottom: 1px solid;">
+    <div class="d-flex justify-content-between p-3 mb-2" style="border-radius: 0.25rem;border-bottom: 1px solid;position: sticky;top: 0;left: 0;width: 100%;z-index: 5;background: #ececec;">
       <h4 class="m-0">{{dataTo.address.split(',').splice(0,2).join(',')}}</h4>
       <span @click="$emit('closebottommenu')" style="cursor: pointer;">X</span>
     </div>
