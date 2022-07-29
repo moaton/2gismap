@@ -8,7 +8,7 @@
 </template>
 
 <script>
-const URL = 'http://195.49.212.34:8080' //'http://localhost:8080'
+const URL = 'http://195.49.212.34:8082' //'http://localhost:8080'
 import showMore from './components/showMore'
 import { ref } from 'vue'
 export default {
