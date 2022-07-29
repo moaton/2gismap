@@ -56,8 +56,8 @@
   </div>
 </template>
 <script>
-// const URL = 'http://195.49.212.34:8082'
-const URL = 'http://localhost:8082'
+const URL = 'http://195.49.212.34:8082'
+// const URL = 'http://localhost:8082'
 
 import store from '../store'
 import { ref } from '@vue/reactivity'

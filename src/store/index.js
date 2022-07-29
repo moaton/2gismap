@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
-// const URL = 'http://195.49.212.34:8082' 
-const URL = 'http://localhost:8082'
+const URL = 'http://195.49.212.34:8082' 
+// const URL = 'http://localhost:8082'
 export default createStore({
   state: {
     user: null,
