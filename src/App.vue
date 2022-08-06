@@ -48,7 +48,7 @@ body{
   height: 0;
 }
 .show{
-  height: 45%;
+  height: 70%;
 }
 .d-none{
   display: none;

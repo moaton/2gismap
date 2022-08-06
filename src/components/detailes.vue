@@ -11,7 +11,7 @@
         <h5>{{data.full_name}}</h5>
         <p>Адрес: {{data.street_name}}, {{data.house_number}}</p>
       </div>
-      <moreDetailes @onopen="onOpen" :data="data"></moreDetailes>
+      <moreDetailes @onopen="onOpen" :data="data"></moreDetailes> <!-- @updatedata="updateData" -->
     </div>
     <div v-else style="text-align:center">
       <h3>{{data.no_data}}</h3>

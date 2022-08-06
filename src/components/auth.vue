@@ -3,7 +3,7 @@
     <div class="auth-card col-md-4 offset-md-4 p-2">
       <h3 class="mb-4">Вход в систему</h3>
       <div class="auth-title d-flex justify-content-center">
-        <button @click="authType(1)" class="btn mr-4" :class="type === 'reg' ? 'btn-primary' : 'btn-outline-primary'">Регистрация</button>
+        <!-- <button @click="authType(1)" class="btn mr-4" :class="type === 'reg' ? 'btn-primary' : 'btn-outline-primary'">Регистрация</button> -->
         <button @click="authType(2)" class="btn ml-4" :class="type === 'auth' ? 'btn-primary' : 'btn-outline-primary'">Авторизация</button>
       </div>
       <form @submit.prevent="onSubmit">

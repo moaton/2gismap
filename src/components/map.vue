@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative;width: 100%;height: 100%;">
     <div id="map" style="width:100%;height:100%;position: absolute;"></div>
-    <showMore :dataTo="legalEntities" id="show-more" class="hide" @closebottommenu="isOpen=false"  />
+    <showMore :dataTo="getLegalData" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import showMore from './showMore.vue'
 import { ref } from 'vue'
 import store from '../store'
 
-const URL = 'http://195.49.212.34:8082'
+// const URL = 'http://195.49.212.34:8082'
 // const URL = 'http://localhost:8082'
 
 export default {
@@ -45,12 +45,21 @@ export default {
       }
     }
   },
+  computed: {
+    getLegalData(){
+      return store.getters.getLegalDate
+    }
+  },
   setup() {
     // const state = ref({
     //   dataTo: {},
     // })
     let legalEntities = ref({items: [], address: ''})
     let isOpen = ref(false)
+    function closeBottomMenu(){
+      isOpen.value = false
+      store.commit('setCoordinates', {latlng: {lat: null, lng: null}})
+    }
     async function loadMap(){
       let DG = require('2gis-maps');
       let map = DG.map('map', {
@@ -69,61 +78,14 @@ export default {
     }
     async function onClick(e){
       isOpen.value = false
-      await fetch(`${URL}/api/legal-entities?lat=${e.latlng.lat.toFixed(6)}&lon=${e.latlng.lng.toFixed(6)}`).then(res => res.json()).then(data => {
-        legalEntities.value.items = []
-        legalEntities.value.address = ''
-        if(data.legalentities.length !== 0 || data.uninhabitedpremises.length !== 0){
-          if(data.legalentities.length !== 0){
-            data.legalentities.map(legalItem => {
-              legalEntities.value.items.push(
-                {
-                  address_name: legalItem.address,
-                  name: legalItem.name,
-                  id: legalItem.id,
-                }
-              ) 
-            })
-          }
-          if(data.uninhabitedpremises.length !== 0){
-            data.uninhabitedpremises.map(unhabitedItem => {
-              legalEntities.value.items.push(
-              {
-                admin_code: unhabitedItem.admin_code,
-                business_id: unhabitedItem.business_id,
-                cadastral_number: unhabitedItem.cadastral_number,
-                date_registration: unhabitedItem.date_registration,
-                date_title_document: unhabitedItem.date_title_document,
-                house_number: unhabitedItem.house_number,
-                full_name: unhabitedItem.full_name,
-                name_locality: unhabitedItem.name_locality,
-                name_title_document: unhabitedItem.name_title_document,
-                number_title_document: unhabitedItem.number_title_document,
-                ownership: unhabitedItem.ownership,
-                real_estate_purpose: unhabitedItem.real_estate_purpose,
-                secondary_object_number: unhabitedItem.secondary_object_number,
-                share: unhabitedItem.share,
-                street_name: unhabitedItem.street_name,
-                total_area: unhabitedItem.total_area,
-              }
-            ) 
-            })
-          }
-          legalEntities.value.address = data.address
-        } else {
-          legalEntities.value.items.push({no_data: 'Нет данных', })
-        }
-        isOpen.value = true
-      }).catch(() => {
-        legalEntities.value.items = []
-        legalEntities.value.address = ''
-        legalEntities.value.items.push({no_data: 'Ошибка сервера', })
-      })
+      isOpen.value = await store.dispatch('getItems', e)
     }
     return {
       onClick,
       loadMap,
       legalEntities,
       isOpen,
+      closeBottomMenu
     }
   }
 }
