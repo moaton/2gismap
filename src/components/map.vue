@@ -10,9 +10,6 @@ import showMore from './showMore.vue'
 import { ref } from 'vue'
 import store from '../store'
 
-// const URL = 'http://195.49.212.34:8082'
-// const URL = 'http://localhost:8082'
-
 export default {
   components: {
     showMore
