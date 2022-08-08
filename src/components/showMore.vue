@@ -111,9 +111,6 @@ export default {
       console.log(this.dataTo);
     }
   },
-  mounted() {
-    console.log('osaoasodso');
-  },
   setup(props) {
     let addBlock = ref(false), addCRM = ref(false), addUnhabbited = ref(false)
     let legalEntitiesForm = ref({

@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
-const URL = 'http://195.49.212.34:8082' 
-// const URL = 'http://localhost:8082'
+// const URL = 'http://195.49.212.34:8082' 
+const URL = 'http://localhost:8082'
 export default createStore({
   state: {
     user: null,
@@ -58,9 +58,9 @@ export default createStore({
         },
         body: JSON.stringify(payload.params) 
       })
-      if(response.status.toString()[0] === '2'){
-        dispatch('getItem',{id: payload.id, coord: state.coordinates})
-      }
+      // if(response.status.toString()[0] === '2' && suburl == 'legal-entities'){
+      //   dispatch('getItem',{id: payload.id, coord: state.coordinates})
+      // }
       return 'success'
     },
     async deleteItem({commit}, payload){
