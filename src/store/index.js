@@ -90,6 +90,7 @@ export default createStore({
             }
             commit('setAddress', data.address)
           } else {
+            commit('setAddress', data.address)
             commit('setErrorData', {no_data: 'Нет данных', })
           }
         }

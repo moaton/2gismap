@@ -86,7 +86,7 @@
           </form>
         </div>
       </div>
-      <div v-if="dataTo.items.length === 0" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div v-if="dataTo.items.length === 0 || isloading" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <div class="spinner-border mb-3" role="status"></div>
         <h4>Загрузка данных...</h4>
       </div>
@@ -102,16 +102,21 @@ import store from '../store'
 
 import { ref } from '@vue/reactivity'
 export default {
-  props: ['dataTo'],
+  props: ['dataTo', 'isloading'],
   components: {
     detailes
+  },
+  computed: {
+    getLegalData(){
+      return store.getters.getLegalDate
+    }
   },
   watch: {
     dataTo(){
       console.log(this.dataTo);
     }
   },
-  setup(props) {
+  setup(props, {emit}) {
     let addBlock = ref(false), addCRM = ref(false), addUnhabbited = ref(false)
     let legalEntitiesForm = ref({
       id: '',
@@ -204,7 +209,47 @@ export default {
           transaction_amount: unhabitted.value.transaction_amount,
           share_property: unhabitted.value.share_property
         }
-        await store.dispatch('addItem', {items: paramsUnhabbited, url: '/api/uninhabited-premise'})
+        await store.dispatch('addItem', {items: paramsUnhabbited, url: '/api/uninhabited-premise'}).then(() => {
+          legalEntitiesForm.value = {
+            id: '',
+            name: '',
+            apartment: '',
+          }
+          cashRegisterMachine.value = {
+            bussines_id: '',
+            taxation_regime: '',
+            brand_crm: '',
+            year_release_crm: '',
+            factory_number_crm: '',
+            registration_number_crm: '',
+            date_registration_crm: '',
+            date_de_registration_crm: '',
+            place_registration_crm: '',
+            license_information: '',
+            type_activity: '',
+            address_point_sale_crm: ''
+          }
+          unhabitted.value = {
+            secondary_object_number: '',
+            admin_code: '',
+            full_name: '',
+            ownership: '',
+            share: '',
+            total_area: '',
+            number_title_document: '',
+            name_title_document: '',
+            date_title_document: '',
+            date_registration: '',
+            cadastral_number: '',
+            type_property: '',
+            real_estate_purpose: '',
+            name_legal_entity: '',
+            transaction_amount: '',
+            share_property: ''
+          }
+          addBlock.value = false
+          emit('reload', store.state.coordinates)
+        })
       // }
     }
     return {

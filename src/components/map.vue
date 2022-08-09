@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative;width: 100%;height: 100%;">
     <div id="map" style="width:100%;height:100%;position: absolute;"></div>
-    <showMore :dataTo="getLegalData" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
+    <showMore :dataTo="getLegalData" @reload="reload" :isloading="getLoadingState" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
   </div>
 </template>
 
@@ -45,6 +45,9 @@ export default {
   computed: {
     getLegalData(){
       return store.getters.getLegalDate
+    },
+    getLoadingState(){
+      return this.isLoading
     }
   },
   setup() {
@@ -52,7 +55,7 @@ export default {
     //   dataTo: {},
     // })
     let legalEntities = ref({items: [], address: ''})
-    let isOpen = ref(false)
+    let isOpen = ref(false), isLoading = ref(false)
     function closeBottomMenu(){
       isOpen.value = false
       store.commit('setCoordinates', {latlng: {lat: null, lng: null}})
@@ -73,16 +76,27 @@ export default {
       DG.polygon(taugul_1, {color: 'yellow'}).addTo(map);
       DG.polygon(taugul_2, {color: 'red'}).addTo(map);
     }
-    async function onClick(e){
-      isOpen.value = false
+    async function reload(payload){
+      onClick(payload, true)
+    }
+    async function onClick(e, reload){
+      if(!reload){
+        isOpen.value = false
+      } else {
+        isLoading.value = true
+      }
       isOpen.value = await store.dispatch('getItems', e)
+      if(isOpen.value){
+        isLoading.value = false
+      }
     }
     return {
       onClick,
       loadMap,
       legalEntities,
       isOpen,
-      closeBottomMenu
+      closeBottomMenu,
+      reload
     }
   }
 }
