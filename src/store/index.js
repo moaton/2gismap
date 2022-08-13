@@ -64,7 +64,12 @@ export default createStore({
       return 'success'
     },
     async deleteItem({commit}, payload){
-      console.log(payload.id);
+      let res = await fetch(`${URL}/api/legal-entities/${payload.id}`, {
+        method: 'DELETE'
+      })
+      if(res.status.toString()[0] === '2'){
+        commit('deleteItem', {id: payload.id})
+      }
     },
     async getItem({commit}, payload){
       let res = await fetch(`${URL}/api/legal-entities/${payload.id}`) //?lat=${e.latlng.lat.toFixed(6)}&lon=${e.latlng.lng.toFixed(6)}`)
@@ -104,6 +109,13 @@ export default createStore({
     }
   },
   mutations: {
+    deleteItem(state, payload){
+      let index = state.legalEntities.items.findIndex(item => item.id === payload.id)
+      state.legalEntities.items.splice(index, 1)
+      if(state.legalEntities.items.length === 0){
+        state.legalEntities.items.push({no_data: 'Нет данных', })
+      }
+    },
     setItem(state, payload){
       let index = state.legalEntities.items.findIndex(item => item.id === payload.id)
       if(index !== -1){
