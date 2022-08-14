@@ -116,7 +116,12 @@ export default {
       return address.replace("кв.", "").split(',').reverse()[0]
     }
     async function deleteItem(){
-      await store.dispatch('deleteItem', {url: 'legal-entities', id: props.data.id}).then(() => {
+      let isUninhabitedPremiseTwos = false, id = props.data.id
+      if(Object.prototype.hasOwnProperty.call(props.data, 'secondary_object_number')){
+        isUninhabitedPremiseTwos = true
+        id = props.data.business_id
+      }
+      await store.dispatch('deleteItem', {url: 'legal-entities', id, isUninhabitedPremiseTwos}).then(() => {
         editForm.value = {
           name: '',
           apartment: '',

@@ -64,7 +64,7 @@ export default createStore({
       return 'success'
     },
     async deleteItem({commit}, payload){
-      let res = await fetch(`${URL}/api/legal-entities/${payload.id}`, {
+      let res = await fetch(`${URL}/api/legal-entities/${payload.id}?isUninhabitedPremiseTwos=${payload.isUninhabitedPremiseTwos}`, {
         method: 'DELETE'
       })
       if(res.status.toString()[0] === '2'){
