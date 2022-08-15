@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative;width: 100%;height: 100%;">
+  <div style="position: relative;width: 100%;height: 100%;overflow: hidden;">
     <div id="map" style="width:100%;height:100%;position: absolute;"></div>
     <showMore :dataTo="getLegalData" @reload="reload" :isloading="getLoadingState" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
     <div class="user__added" :class="{'user__added-show': isUserAdded}">
@@ -146,11 +146,8 @@ export default {
     overflow: scroll;
   }
   .add__user{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 350px;
+    max-width: 350px; 
+    margin: 0 auto;
   }
   .add__user .auth-card {
     background: #fff;

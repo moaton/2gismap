@@ -1,10 +1,9 @@
 <template>
   <div class="col-12 justify-content-center align-items-center pt-4 pb-4">
     <div class="auth-card p-2" :class="{'col-md-4 offset-md-4': !adduser}">
-      <h3 class="mb-4" style="position:relative">
-        <span v-if="!adduser">Вход в систему</span>
-        <span v-else>Добавить пользователя</span>
-        <span v-if="adduser" style="position: absolute; top: 0; right: 0;cursor:pointer" @click="$emit('close')">X</span>
+      <h3 v-if="adduser" class="mb-4" style="position:relative">
+        <span>Добавить пользователя</span>
+        <span style="position: absolute; top: 0; right: 0;cursor:pointer" @click="$emit('close')">X</span>
       </h3>
       <div class="auth-title d-flex justify-content-center">
         <!-- <button @click="authType(1)" class="btn mr-4" :class="type === 'reg' ? 'btn-primary' : 'btn-outline-primary'">Регистрация</button> -->
