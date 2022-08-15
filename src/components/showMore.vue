@@ -5,7 +5,7 @@
       <span @click="$emit('closebottommenu')" style="cursor: pointer;">X</span>
     </div>
     <div>
-      <div style="text-align: left;padding: 5px 15px;padding-bottom: 10px;border-radius: 0.25rem;border-bottom: 1px solid;background: #ececec;">
+      <div v-if="user.role === 'admin'" style="text-align: left;padding: 5px 15px;padding-bottom: 10px;border-radius: 0.25rem;border-bottom: 1px solid;background: #ececec;">
         <button class="btn btn-outline-success" @click="addBlock = !addBlock">Добавить</button>
         <div style="height: 0px; overflow: hidden;transition: all 0.5s ease" :style="addBlock ? 'height: auto; overflow: auto':''">
           <form @submit.prevent="addItem">
@@ -109,7 +109,10 @@ export default {
   computed: {
     getLegalData(){
       return store.getters.getLegalDate
-    }
+    },
+    user(){
+      return store.getters.getUser
+    },
   },
   watch: {
     dataTo(){

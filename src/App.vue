@@ -28,6 +28,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css");
 body{
   padding: 0;
   margin: 0;

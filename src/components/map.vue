@@ -2,17 +2,32 @@
   <div style="position: relative;width: 100%;height: 100%;">
     <div id="map" style="width:100%;height:100%;position: absolute;"></div>
     <showMore :dataTo="getLegalData" @reload="reload" :isloading="getLoadingState" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
+    <div class="user__added" :class="{'user__added-show': isUserAdded}">
+      <p class="m-0">Пользователь добавлен</p>
+    </div>
+    <div class="add__user-btn" v-if="user.role === 'admin'">
+      <button class="btn btn-warning" @click="addUser=!addUser">
+        <i class="bi bi-person-plus-fill"></i>
+      </button>
+    </div>
+    <div v-if="addUser" class="add__user-back">
+      <div class="add__user">
+        <auth :adduser="true" v-click-outside="closeAddUser" @close="closeAddUser" @authed="added"></auth>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import auth from './auth.vue'
 import showMore from './showMore.vue'
 import { ref } from 'vue'
 import store from '../store'
 
 export default {
   components: {
-    showMore
+    showMore,
+    auth
   },
   async mounted() {
     if(store.state.user !== null){
@@ -48,17 +63,31 @@ export default {
     },
     getLoadingState(){
       return this.isLoading
-    }
+    },
+    user(){
+      return store.getters.getUser
+    },
   },
   setup() {
     // const state = ref({
     //   dataTo: {},
     // })
     let legalEntities = ref({items: [], address: ''})
-    let isOpen = ref(false), isLoading = ref(false)
+    let isOpen = ref(false), isLoading = ref(false), addUser = ref(false)
     function closeBottomMenu(){
       isOpen.value = false
       store.commit('setCoordinates', {latlng: {lat: null, lng: null}})
+    }
+    function closeAddUser(){
+      addUser.value = false
+    }
+    let isUserAdded = ref(false)
+    function added(){
+      isUserAdded.value = true
+      addUser.value = false
+      setTimeout(() => {
+        isUserAdded.value = false
+      }, 3000)
     }
     async function loadMap(){
       let DG = require('2gis-maps');
@@ -96,12 +125,51 @@ export default {
       legalEntities,
       isOpen,
       closeBottomMenu,
-      reload
+      reload,
+      closeAddUser,
+      addUser,
+      added,
+      isUserAdded
     }
   }
 }
 </script>
 
 <style>
-
+  .add__user-back{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 22%);
+  }
+  .add__user{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+  }
+  .add__user .auth-card {
+    background: #fff;
+  }
+  .add__user-btn{
+    position: absolute; 
+    top: 15%; 
+    right: 10px;
+  }
+  .user__added {
+    position: absolute;
+    background: rgb(72, 179, 97);
+    padding: 10px;
+    border-radius: 0.25rem;
+    color: rgb(255, 255, 255);
+    width: 100%;
+    top: -100%;
+    transition: all .5s ease;
+  }
+  .user__added-show{
+    top: 0;
+  }
 </style>
