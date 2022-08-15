@@ -143,10 +143,11 @@ export default {
     width: 100%;
     height: 100%;
     background: rgb(0 0 0 / 22%);
+    overflow: scroll;
   }
   .add__user{
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 350px;
