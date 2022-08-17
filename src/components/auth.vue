@@ -6,8 +6,7 @@
         <span style="position: absolute; top: 0; right: 0;cursor:pointer" @click="$emit('close')">X</span>
       </h3>
       <div class="auth-title d-flex justify-content-center">
-        <!-- <button @click="authType(1)" class="btn mr-4" :class="type === 'reg' ? 'btn-primary' : 'btn-outline-primary'">Регистрация</button> -->
-        <button v-if="!adduser" @click="authType(2)" class="btn ml-4" :class="type === 'auth' ? 'btn-primary' : 'btn-outline-primary'">Авторизация</button>
+        <p>Авторизация</p>
       </div>
       <form @submit.prevent="onSubmit">
         <div v-if="type === 'auth' && !adduser" class="mt-3">
