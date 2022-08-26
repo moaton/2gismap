@@ -4,8 +4,8 @@
       <button class="btn" :class="btn === 'Подробнее...' ? 'btn-info' : 'btn-secondary'" @click="moreDetailes(data)">{{btn}}</button>
     </div>
     <div v-if="isOpen" class="d-flex align-items-center justify-content-center pb-4 mb-2 pt-2" style="border-bottom: 1px solid; background: rgb(217, 217, 217);">
-      <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isInformation}" @click="selectSubCategory('owner')">Информация</p>
-      <p class="link-btn m-0" :class="{'link-btn-active': isRevenue}" @click="selectSubCategory('registred')">Доходы</p>
+      <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isInformation}" @click="selectSubCategory('info')">Информация</p>
+      <p class="link-btn m-0" :class="{'link-btn-active': isRevenue}" @click="selectSubCategory('revenue')">Доходы</p>
     </div>
     <div v-if="isInformation">
       <div v-if="isOpen && !data.hasOwnProperty('secondary_object_number')">
@@ -319,9 +319,21 @@ export default {
       isEdit.value = false
       emit('onopen')
     }
-    function selectSubCategory(){
-      isInformation.value = !isInformation.value
-      isRevenue.value = !isRevenue.value
+    function selectSubCategory(subCategory){
+      switch (subCategory) {
+        case 'info':
+          if(!isInformation.value){
+            isInformation.value = true
+            isRevenue.value = false
+          }
+          break;
+        case 'revenue':
+            if(!isRevenue.value){
+              isRevenue.value = true
+              isInformation.value = false
+            }
+          break;
+      }
     }
     return {
       moreDetailes,
