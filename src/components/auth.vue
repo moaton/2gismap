@@ -28,7 +28,7 @@
             </label>
             <label for="password_repeat">
               <input id="password_repeat" :disabled="adding" v-model="form.password_repeat" class="" type="password" placeholder="Повторите пароль">
-              <span>Имя пользователя</span>
+              <span>Повторите пароль</span>
             </label>
           </div>
           <p class="mt-3 mb-0 text-left text-secondary">Личная информация</p>
