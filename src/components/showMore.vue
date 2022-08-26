@@ -259,27 +259,26 @@ export default {
         })
       // }
     }
-    let isRegistered = ref(false), isOwner = ref(false)
+    let isRegistered = ref(true), isOwner = ref(true)
     function selectCategory(category){
       switch (category) {
         case 'owner':
-          if(!isOwner.value){
+          if(!isOwner.value || isRegistered.value === isOwner.value) {
             isRegistered.value = false
             isOwner.value = true
           } else {
-            isOwner.value = false
+            isRegistered.value = true
+            isOwner.value = true
           }
           break;
         case 'registred':
-          if(!isRegistered.value){
+          if(!isRegistered.value || isRegistered.value === isOwner.value){
             isRegistered.value = true
             isOwner.value = false
           } else {
-            isRegistered.value = false
+            isRegistered.value = true
+            isOwner.value = true
           }
-          break;
-      
-        default:
           break;
       }
     }
