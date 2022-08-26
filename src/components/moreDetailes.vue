@@ -3,52 +3,58 @@
     <div class="d-flex justify-content-end">
       <button class="btn" :class="btn === 'Подробнее...' ? 'btn-info' : 'btn-secondary'" @click="moreDetailes(data)">{{btn}}</button>
     </div>
-    <div v-if="isOpen && !data.hasOwnProperty('secondary_object_number')">
-      <div class="mt-3">
-        <p>Регистрационный номер: <b>{{data.id}}</b></p>
-        <p>Наименование: <b v-if="!isEdit">{{data.name}}</b><input v-else v-model="editForm.name" type="text" class="form-control" :placeholder="data.name"></p>
-        <p>Квартира: <b v-if="!isEdit">{{getAddress(data.address_name)}}</b><input v-else v-model="editForm.apartment" type="text" class="form-control" :placeholder="data.address_name.replace('кв.', '').split(',').reverse()[0]"></p>
-      </div>
-      <div v-if="isLoaded" class="mb-2"> <!-- РЕДАКТИРОВАНИЕ ДОПИЛИТЬ, ОТПРАВКА ДАННЫХ НА БЭК И СЭЙВ В БД -->
-        <div v-if="items.cashregistermachines.length !== 0 && items !== {} ">
-          <p v-if="items.cashregistermachines.business_id !== ''">ИИН/БИН: <b v-if="!isEdit">{{items.cashregistermachines.business_id}}</b><input v-else v-model="editForm.business_id" type="text" class="form-control" :placeholder="items.cashregistermachines.business_id"></p>
-          <p v-if="items.cashregistermachines.taxation_regime !== ''">Режим налогообложения: <b v-if="!isEdit">{{items.cashregistermachines.taxation_regime}}</b><input v-else v-model="editForm.taxation_regime" type="text" class="form-control" :placeholder="items.cashregistermachines.taxation_regime"></p>
-          <p v-if="items.cashregistermachines.brand_crm !== ''">Марка ККМ с ФП: <b v-if="!isEdit">{{items.cashregistermachines.brand_crm}}</b><input v-else v-model="editForm.brand_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.brand_crm"></p>
-          <p v-if="items.cashregistermachines.factory_number_crm !== ''">Заводской номер: <b v-if="!isEdit">{{items.cashregistermachines.factory_number_crm}}</b><input v-else v-model="editForm.factory_number_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.factory_number_crm"></p>
-          <p v-if="items.cashregistermachines.year_release_crm !== ''">Год выпуска: <b v-if="!isEdit">{{items.cashregistermachines.year_release_crm}}</b><input v-else v-model="editForm.year_release_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.year_release_crm"></p>
-          <p v-if="items.cashregistermachines.registration_number_crm !== ''">Регистрационный номер: <b v-if="!isEdit">{{items.cashregistermachines.registration_number_crm}}</b><input v-else v-model="editForm.registration_number_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.registration_number_crm"></p>
-          <p v-if="items.cashregistermachines.date_registration_crm !== ''">Дата постановки на учет: <b v-if="!isEdit">{{items.cashregistermachines.date_registration_crm}}</b><input v-else v-model="editForm.date_registration_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.date_registration_crm"></p>
-          <p v-if="items.cashregistermachines.date_de_registration_crm !== ''">Дата снятия с учета: <b v-if="!isEdit">{{items.cashregistermachines.date_de_registration_crm}}</b><input v-else v-model="editForm.date_de_registration_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.date_de_registration_crm"></p>
-          <p v-if="items.cashregistermachines.place_registration_crm !== ''">НО по месту регистрации ККМ с ФП: <b v-if="!isEdit">{{items.cashregistermachines.place_registration_crm}}</b><input v-else v-model="editForm.place_registration_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.place_registration_crm"></p>
-        </div>
-        <div v-if="items.uninhabitedpremises.length !== 0 && items !== {} ">
-          <p v-if="items.uninhabitedpremises.type_property">Вид объекта недвижимости: <b v-if="!isEdit">{{items.uninhabitedpremises.type_property}}</b><input v-else v-model="editForm.type_property" type="text" class="form-control" :placeholder="items.uninhabitedpremises.type_property"></p>
-          <p v-if="items.uninhabitedpremises.real_estate_purpose">Целевое назначение недвижимости: <b v-if="!isEdit">{{items.uninhabitedpremises.real_estate_purpose}}</b><input v-else v-model="editForm.real_estate_purpose" type="text" class="form-control" :placeholder="items.uninhabitedpremises.real_estate_purpose"></p>
-          <p v-if="items.uninhabitedpremises.total_area">Общая площадь: <b v-if="!isEdit">{{items.uninhabitedpremises.total_area}} м<sup><small>2</small></sup></b><input v-else v-model="editForm.total_area" type="text" class="form-control" :placeholder="items.uninhabitedpremises.total_area"></p>
-          <p v-if="items.uninhabitedpremises.cadastral_number">Кадастровый номер объекта недвижимости: <b v-if="!isEdit">{{items.uninhabitedpremises.cadastral_number}}</b><input v-else v-model="editForm.cadastral_number" type="text" class="form-control" :placeholder="items.uninhabitedpremises.cadastral_number"></p>
-          <p v-if="items.uninhabitedpremises.name_title_document">Наименование правоустанавливающего документа на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.name_title_document}}</b><input v-else v-model="editForm.name_title_document" type="text" class="form-control" :placeholder="items.uninhabitedpremises.name_title_document"></p>
-          <p v-if="items.uninhabitedpremises.date_title_document">Дата правоустанавливающего документа на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.date_title_document}}</b><input v-else v-model="editForm.date_title_document" type="text" class="form-control" :placeholder="items.uninhabitedpremises.date_title_document"></p>
-          <p v-if="items.uninhabitedpremises.number_title_document">Номер правоустанавливающего документа на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.number_title_document}}</b><input v-else v-model="editForm.number_title_document" type="text" class="form-control" :placeholder="items.uninhabitedpremises.number_title_document"></p>
-          <p v-if="items.uninhabitedpremises.date_registration">Дата регистрации права на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.date_registration}}</b><input v-else v-model="editForm.date_registration" type="text" class="form-control" :placeholder="items.uninhabitedpremises.date_registration"></p>
-          <p v-if="items.uninhabitedpremises.name_legal_entity">Наименование юридического лица или их структурных подразделений, крестьянских (фермерских) хозяйств: <b v-if="!isEdit">{{items.uninhabitedpremises.name_legal_entity}}</b><input v-else v-model="editForm.name_legal_entity" type="text" class="form-control" :placeholder="items.uninhabitedpremises.name_legal_entity"></p>
-          <p v-if="items.uninhabitedpremises.transaction_amount">Сумма сделки: <b v-if="!isEdit">{{items.uninhabitedpremises.transaction_amount}}</b><input v-else v-model="editForm.transaction_amount" type="text" class="form-control" :placeholder="items.uninhabitedpremises.transaction_amount"></p>
-          <p v-if="items.uninhabitedpremises.ownership">Собственность: <b v-if="!isEdit">{{items.uninhabitedpremises.ownership}}</b><input v-else v-model="editForm.ownership" type="text" class="form-control" :placeholder="items.uninhabitedpremises.ownership"></p>
-          <p v-if="items.uninhabitedpremises.share_property">Доля в имуществе: <b v-if="!isEdit">{{items.uninhabitedpremises.share_property}}</b><input v-else v-model="editForm.share_property" type="text" class="form-control" :placeholder="items.uninhabitedpremises.share_property"></p>
-        </div>
-      </div>
+    <div v-if="isOpen" class="d-flex align-items-center justify-content-center pb-4 mb-2 pt-2" style="border-bottom: 1px solid; background: rgb(217, 217, 217);">
+      <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isInformation}" @click="selectSubCategory('owner')">Информация</p>
+      <p class="link-btn m-0" :class="{'link-btn-active': isRevenue}" @click="selectSubCategory('registred')">Доходы</p>
     </div>
-    <div v-if="isOpen && data.hasOwnProperty('secondary_object_number')" class="mt-3">
-      <p v-if="!!data.secondary_object_number">Номер вторичного объекта: <b v-if="!isEdit">{{data.secondary_object_number}}</b><input v-else type="text" class="form-control" :placeholder="data.secondary_object_number"></p>
-      <p v-if="!!data.admin_code">Код по классификатору административно – территориальных объектов: <b v-if="!isEdit">{{data.admin_code}}</b><input v-else type="text" class="form-control" :placeholder="data.admin_code"></p>
-      <p v-if="!!data.ownership">Право собственности на земельный участок: <b v-if="!isEdit">{{data.ownership}}</b><input v-else type="text" class="form-control" :placeholder="data.ownership"></p>
-      <p v-if="!!data.share">Доля: <b v-if="!isEdit">{{data.share}}</b><input v-else type="text" class="form-control" :placeholder="data.share"></p>
-      <p v-if="!!data.total_area">Площадь земельного участка: <b v-if="!isEdit">{{data.total_area}} м<sup><small>2</small></sup></b><input v-else type="text" class="form-control" :placeholder="data.total_area"></p>
-      <p v-if="!!data.number_title_document">Номер правоустанавливающего документа на земельный участок: <b v-if="!isEdit">{{data.number_title_document}}</b><input v-else type="text" class="form-control" :placeholder="data.number_title_document"></p>
-      <p v-if="!!data.name_title_document">Наименование правоустанавливающего документа на земельный участок: <b v-if="!isEdit">{{data.name_title_document}}</b><input v-else type="text" class="form-control" :placeholder="data.name_title_document"></p>
-      <p v-if="!!data.date_title_document">Дата правоустанавливающего документа на земельный участок: <b v-if="!isEdit">{{data.date_title_document}}</b><input v-else type="text" class="form-control" :placeholder="data.date_title_document"></p>
-      <p v-if="!!data.date_registration">Дата регистрации права на земельный участок: <b v-if="!isEdit">{{data.date_registration}}</b><input v-else type="text" class="form-control" :placeholder="data.date_registration"></p>
-      <p v-if="!!data.cadastral_number">Кадастровый номер земельного участка: <b v-if="!isEdit">{{data.cadastral_number}}</b><input v-else type="text" class="form-control" :placeholder="data.cadastral_number"></p>
-      <p v-if="!!data.real_estate_purpose">Целевое назначение земельного участка: <b v-if="!isEdit">{{data.real_estate_purpose}}</b><input v-else type="text" class="form-control" :placeholder="data.real_estate_purpose"></p>
+    <div v-if="isInformation">
+      <div v-if="isOpen && !data.hasOwnProperty('secondary_object_number')">
+        <div class="mt-3">
+          <p>Регистрационный номер: <b>{{data.id}}</b></p>
+          <p>Наименование: <b v-if="!isEdit">{{data.name}}</b><input v-else v-model="editForm.name" type="text" class="form-control" :placeholder="data.name"></p>
+          <p>Квартира: <b v-if="!isEdit">{{getAddress(data.address_name)}}</b><input v-else v-model="editForm.apartment" type="text" class="form-control" :placeholder="data.address_name.replace('кв.', '').split(',').reverse()[0]"></p>
+        </div>
+        <div v-if="isLoaded" class="mb-2"> <!-- РЕДАКТИРОВАНИЕ ДОПИЛИТЬ, ОТПРАВКА ДАННЫХ НА БЭК И СЭЙВ В БД -->
+          <div v-if="items.cashregistermachines.length !== 0 && items !== {} ">
+            <p v-if="items.cashregistermachines.business_id !== ''">ИИН/БИН: <b v-if="!isEdit">{{items.cashregistermachines.business_id}}</b><input v-else v-model="editForm.business_id" type="text" class="form-control" :placeholder="items.cashregistermachines.business_id"></p>
+            <p v-if="items.cashregistermachines.taxation_regime !== ''">Режим налогообложения: <b v-if="!isEdit">{{items.cashregistermachines.taxation_regime}}</b><input v-else v-model="editForm.taxation_regime" type="text" class="form-control" :placeholder="items.cashregistermachines.taxation_regime"></p>
+            <p v-if="items.cashregistermachines.brand_crm !== ''">Марка ККМ с ФП: <b v-if="!isEdit">{{items.cashregistermachines.brand_crm}}</b><input v-else v-model="editForm.brand_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.brand_crm"></p>
+            <p v-if="items.cashregistermachines.factory_number_crm !== ''">Заводской номер: <b v-if="!isEdit">{{items.cashregistermachines.factory_number_crm}}</b><input v-else v-model="editForm.factory_number_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.factory_number_crm"></p>
+            <p v-if="items.cashregistermachines.year_release_crm !== ''">Год выпуска: <b v-if="!isEdit">{{items.cashregistermachines.year_release_crm}}</b><input v-else v-model="editForm.year_release_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.year_release_crm"></p>
+            <p v-if="items.cashregistermachines.registration_number_crm !== ''">Регистрационный номер: <b v-if="!isEdit">{{items.cashregistermachines.registration_number_crm}}</b><input v-else v-model="editForm.registration_number_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.registration_number_crm"></p>
+            <p v-if="items.cashregistermachines.date_registration_crm !== ''">Дата постановки на учет: <b v-if="!isEdit">{{items.cashregistermachines.date_registration_crm}}</b><input v-else v-model="editForm.date_registration_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.date_registration_crm"></p>
+            <p v-if="items.cashregistermachines.date_de_registration_crm !== ''">Дата снятия с учета: <b v-if="!isEdit">{{items.cashregistermachines.date_de_registration_crm}}</b><input v-else v-model="editForm.date_de_registration_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.date_de_registration_crm"></p>
+            <p v-if="items.cashregistermachines.place_registration_crm !== ''">НО по месту регистрации ККМ с ФП: <b v-if="!isEdit">{{items.cashregistermachines.place_registration_crm}}</b><input v-else v-model="editForm.place_registration_crm" type="text" class="form-control" :placeholder="items.cashregistermachines.place_registration_crm"></p>
+          </div>
+          <div v-if="items.uninhabitedpremises.length !== 0 && items !== {} ">
+            <p v-if="items.uninhabitedpremises.type_property">Вид объекта недвижимости: <b v-if="!isEdit">{{items.uninhabitedpremises.type_property}}</b><input v-else v-model="editForm.type_property" type="text" class="form-control" :placeholder="items.uninhabitedpremises.type_property"></p>
+            <p v-if="items.uninhabitedpremises.real_estate_purpose">Целевое назначение недвижимости: <b v-if="!isEdit">{{items.uninhabitedpremises.real_estate_purpose}}</b><input v-else v-model="editForm.real_estate_purpose" type="text" class="form-control" :placeholder="items.uninhabitedpremises.real_estate_purpose"></p>
+            <p v-if="items.uninhabitedpremises.total_area">Общая площадь: <b v-if="!isEdit">{{items.uninhabitedpremises.total_area}} м<sup><small>2</small></sup></b><input v-else v-model="editForm.total_area" type="text" class="form-control" :placeholder="items.uninhabitedpremises.total_area"></p>
+            <p v-if="items.uninhabitedpremises.cadastral_number">Кадастровый номер объекта недвижимости: <b v-if="!isEdit">{{items.uninhabitedpremises.cadastral_number}}</b><input v-else v-model="editForm.cadastral_number" type="text" class="form-control" :placeholder="items.uninhabitedpremises.cadastral_number"></p>
+            <p v-if="items.uninhabitedpremises.name_title_document">Наименование правоустанавливающего документа на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.name_title_document}}</b><input v-else v-model="editForm.name_title_document" type="text" class="form-control" :placeholder="items.uninhabitedpremises.name_title_document"></p>
+            <p v-if="items.uninhabitedpremises.date_title_document">Дата правоустанавливающего документа на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.date_title_document}}</b><input v-else v-model="editForm.date_title_document" type="text" class="form-control" :placeholder="items.uninhabitedpremises.date_title_document"></p>
+            <p v-if="items.uninhabitedpremises.number_title_document">Номер правоустанавливающего документа на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.number_title_document}}</b><input v-else v-model="editForm.number_title_document" type="text" class="form-control" :placeholder="items.uninhabitedpremises.number_title_document"></p>
+            <p v-if="items.uninhabitedpremises.date_registration">Дата регистрации права на недвижимое имущество: <b v-if="!isEdit">{{items.uninhabitedpremises.date_registration}}</b><input v-else v-model="editForm.date_registration" type="text" class="form-control" :placeholder="items.uninhabitedpremises.date_registration"></p>
+            <p v-if="items.uninhabitedpremises.name_legal_entity">Наименование юридического лица или их структурных подразделений, крестьянских (фермерских) хозяйств: <b v-if="!isEdit">{{items.uninhabitedpremises.name_legal_entity}}</b><input v-else v-model="editForm.name_legal_entity" type="text" class="form-control" :placeholder="items.uninhabitedpremises.name_legal_entity"></p>
+            <p v-if="items.uninhabitedpremises.transaction_amount">Сумма сделки: <b v-if="!isEdit">{{items.uninhabitedpremises.transaction_amount}}</b><input v-else v-model="editForm.transaction_amount" type="text" class="form-control" :placeholder="items.uninhabitedpremises.transaction_amount"></p>
+            <p v-if="items.uninhabitedpremises.ownership">Собственность: <b v-if="!isEdit">{{items.uninhabitedpremises.ownership}}</b><input v-else v-model="editForm.ownership" type="text" class="form-control" :placeholder="items.uninhabitedpremises.ownership"></p>
+            <p v-if="items.uninhabitedpremises.share_property">Доля в имуществе: <b v-if="!isEdit">{{items.uninhabitedpremises.share_property}}</b><input v-else v-model="editForm.share_property" type="text" class="form-control" :placeholder="items.uninhabitedpremises.share_property"></p>
+          </div>
+        </div>
+      </div>
+      <div v-if="isOpen && data.hasOwnProperty('secondary_object_number')" class="mt-3">
+        <p v-if="!!data.secondary_object_number">Номер вторичного объекта: <b v-if="!isEdit">{{data.secondary_object_number}}</b><input v-else type="text" class="form-control" :placeholder="data.secondary_object_number"></p>
+        <p v-if="!!data.admin_code">Код по классификатору административно – территориальных объектов: <b v-if="!isEdit">{{data.admin_code}}</b><input v-else type="text" class="form-control" :placeholder="data.admin_code"></p>
+        <p v-if="!!data.ownership">Право собственности на земельный участок: <b v-if="!isEdit">{{data.ownership}}</b><input v-else type="text" class="form-control" :placeholder="data.ownership"></p>
+        <p v-if="!!data.share">Доля: <b v-if="!isEdit">{{data.share}}</b><input v-else type="text" class="form-control" :placeholder="data.share"></p>
+        <p v-if="!!data.total_area">Площадь земельного участка: <b v-if="!isEdit">{{data.total_area}} м<sup><small>2</small></sup></b><input v-else type="text" class="form-control" :placeholder="data.total_area"></p>
+        <p v-if="!!data.number_title_document">Номер правоустанавливающего документа на земельный участок: <b v-if="!isEdit">{{data.number_title_document}}</b><input v-else type="text" class="form-control" :placeholder="data.number_title_document"></p>
+        <p v-if="!!data.name_title_document">Наименование правоустанавливающего документа на земельный участок: <b v-if="!isEdit">{{data.name_title_document}}</b><input v-else type="text" class="form-control" :placeholder="data.name_title_document"></p>
+        <p v-if="!!data.date_title_document">Дата правоустанавливающего документа на земельный участок: <b v-if="!isEdit">{{data.date_title_document}}</b><input v-else type="text" class="form-control" :placeholder="data.date_title_document"></p>
+        <p v-if="!!data.date_registration">Дата регистрации права на земельный участок: <b v-if="!isEdit">{{data.date_registration}}</b><input v-else type="text" class="form-control" :placeholder="data.date_registration"></p>
+        <p v-if="!!data.cadastral_number">Кадастровый номер земельного участка: <b v-if="!isEdit">{{data.cadastral_number}}</b><input v-else type="text" class="form-control" :placeholder="data.cadastral_number"></p>
+        <p v-if="!!data.real_estate_purpose">Целевое назначение земельного участка: <b v-if="!isEdit">{{data.real_estate_purpose}}</b><input v-else type="text" class="form-control" :placeholder="data.real_estate_purpose"></p>
+      </div>
     </div>
     <div v-if="isOpen && user.role === 'admin'" class="actions mt-3 d-flex justify-content-between mb-3">
       <button class="btn btn-outline-danger" @click="deleteItem()">Удалить</button>
@@ -75,7 +81,9 @@ export default {
     isOpen = ref(false),
     items = ref({}),
     isEdit = ref(false),
-    loader = ref(false,)
+    loader = ref(false),
+    isInformation = ref(true),
+    isRevenue = ref(false)
 
 
     let editForm = ref({
@@ -311,6 +319,10 @@ export default {
       isEdit.value = false
       emit('onopen')
     }
+    function selectSubCategory(){
+      isInformation.value = !isInformation.value
+      isRevenue.value = !isRevenue.value
+    }
     return {
       moreDetailes,
       isLoaded,
@@ -322,17 +334,20 @@ export default {
       editForm,
       getAddress,
       deleteItem,
-      loader
+      loader,
+      isInformation,
+      isRevenue,
+      selectSubCategory
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-p{
+p:not([class]){
   margin: 0;
   position: relative;
 }
-p::before{
+p:not([class])::before{
   content: "";
   position: absolute;
   bottom: 0;
@@ -342,7 +357,7 @@ p::before{
   background: #2c3e50;
   transition: all .5s ease;
 }
-p::after{
+p:not([class])::after{
   content: "";
   position: absolute;
   bottom: 0;
@@ -353,10 +368,13 @@ p::after{
   transition: all .5s ease;
 
 }
-p:hover::after{
+p:not([class]):hover::after{
   width: 100%;
 }
-p:hover::before{
+p:not([class]):hover::before{
   height: 100%;
+}
+.link-btn {
+  border: 1px solid rgb(217, 217, 217);
 }
 </style>

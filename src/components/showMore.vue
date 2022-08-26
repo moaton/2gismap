@@ -5,6 +5,10 @@
       <span @click="$emit('closebottommenu')" style="cursor: pointer;">X</span>
     </div>
     <div>
+      <div class="d-flex align-items-center justify-content-center pb-4 mb-2 pt-2" style="border-bottom: 1px solid; background: rgb(236, 236, 236);">
+        <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isOwner}" @click="selectCategory('owner')">Собственники</p>
+        <p class="link-btn m-0" :class="{'link-btn-active': isRegistered}" @click="selectCategory('registred')">Зарегестрированные</p>
+      </div>
       <div v-if="user.role === 'admin'" style="text-align: left;padding: 5px 15px;padding-bottom: 10px;border-radius: 0.25rem;border-bottom: 1px solid;background: #ececec;">
         <button class="btn btn-outline-success" @click="addBlock = !addBlock">Добавить</button>
         <div style="height: 0px; overflow: hidden;transition: all 0.5s ease" :style="addBlock ? 'height: auto; overflow: auto':''">
@@ -255,6 +259,30 @@ export default {
         })
       // }
     }
+    let isRegistered = ref(false), isOwner = ref(false)
+    function selectCategory(category){
+      switch (category) {
+        case 'owner':
+          if(!isOwner.value){
+            isRegistered.value = false
+            isOwner.value = true
+          } else {
+            isOwner.value = false
+          }
+          break;
+        case 'registred':
+          if(!isRegistered.value){
+            isRegistered.value = true
+            isOwner.value = false
+          } else {
+            isRegistered.value = false
+          }
+          break;
+      
+        default:
+          break;
+      }
+    }
     return {
       addItem,
       addBlock,
@@ -263,6 +291,9 @@ export default {
       cashRegisterMachine,
       addUnhabbited,
       unhabitted,
+      selectCategory,
+      isOwner,
+      isRegistered
     }
   }
 }
@@ -296,6 +327,25 @@ export default {
     color: #fff;
     border: 1px solid #28a745;
     background: #28a745;
+  }
+  .link-btn{
+    border: 1px solid #ececec;
+    color: #000;
+    border-radius: 0.3rem;
+    padding: 2px 5px;
+    cursor: pointer;
+    transition: all .3s ease;
+  }
+  .link-btn:hover{
+    border: 1px solid #007bff;
+    color: #007bff;
+    border-radius: 0.3rem;
+  }
+  .link-btn-active{
+    border: 1px solid #007bff !important;
+    color: #007bff;
+    border-radius: 0.3rem;
+    user-select: none;
   }
   @media(max-width: 768px) {
     .card{
