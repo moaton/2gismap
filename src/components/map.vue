@@ -146,7 +146,7 @@ export default {
     overflow: scroll;
   }
   .add__user{
-    max-width: 350px; 
+    max-width: 485px; 
     margin: 0 auto;
   }
   .add__user .auth-card {
