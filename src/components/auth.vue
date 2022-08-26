@@ -1,7 +1,7 @@
 <template>
   <div class="col-12 justify-content-center align-items-center pt-4 pb-4">
     <div class="auth-card p-2" :class="{'col-md-4 offset-md-4': !adduser}">
-      <h4 v-if="adduser" class="mb-4" style="position:relative">
+      <h4 v-if="adduser" class="mb-4" style="position:relative;padding:0 16px">
         <span>Добавить пользователя</span>
         <span style="position: absolute; top: 0; right: 0;cursor:pointer" @click="$emit('close')">X</span>
       </h4>
