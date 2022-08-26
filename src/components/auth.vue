@@ -45,7 +45,7 @@
               <input id="phone" :disabled="adding" v-model="form.phone" type="tel" placeholder="+71234567890">
               <span>Номер телефона</span>
             </label>
-            <treeselect class="text-input" id="post" v-model="value" :options="options" :clearable="false" :default-expand-level="1"></treeselect>
+            <treeselect class="text-input" id="post" v-model="value" :options="options" :searchable="false" :clearable="false" :default-expand-level="1"></treeselect>
             <label class="label" for="post">Должность: {{getPost}}</label>
           </div>
         </div>
