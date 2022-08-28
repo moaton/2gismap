@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative;width: 100%;height: 100%;overflow: hidden;">
     <div id="map" style="width:100%;height:100%;position: absolute;"></div>
-    <showMore :dataTo="getLegalData" @reload="reload" :isloading="getLoadingState" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
+    <showMore :dataTo="getLegalData" @reload="reload" @getitemscategory="getItemsCategory" :isloading="getLoadingState" id="show-more" class="hide" @closebottommenu="closeBottomMenu"  />
     <div class="user__added" :class="{'user__added-show': isUserAdded}">
       <p class="m-0">Пользователь добавлен</p>
     </div>
@@ -109,6 +109,8 @@ export default {
       onClick(payload, true)
     }
     async function onClick(e, reload){
+      store.commit('setIsRegistered', true)
+      store.commit('setIsOwner', true)
       if(!reload){
         isOpen.value = false
       } else {
@@ -118,6 +120,14 @@ export default {
       if(isOpen.value){
         isLoading.value = false
       }
+    }
+    async function getItemsCategory(){
+      isLoading.value = true
+      if(store.getters.getIsRegistered === store.getters.getIsOwner){
+        await store.dispatch('getItems', store.state.coordinates).then(() => isLoading.value = false)
+        return
+      }
+      await store.dispatch('getItemsByCategory').then(() => isLoading.value = false)
     }
     return {
       onClick,
@@ -129,7 +139,9 @@ export default {
       closeAddUser,
       addUser,
       added,
-      isUserAdded
+      isUserAdded,
+      getItemsCategory,
+      isLoading,
     }
   }
 }
@@ -144,6 +156,7 @@ export default {
     height: 100%;
     background: rgb(0 0 0 / 22%);
     overflow: scroll;
+    z-index: 1005;
   }
   .add__user{
     max-width: 485px; 
@@ -166,6 +179,7 @@ export default {
     width: 100%;
     top: -100%;
     transition: all .5s ease;
+    z-index: 1010;
   }
   .user__added-show{
     top: 0;

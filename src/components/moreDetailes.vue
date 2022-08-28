@@ -4,8 +4,8 @@
       <button class="btn" :class="btn === 'Подробнее...' ? 'btn-info' : 'btn-secondary'" @click="moreDetailes(data)">{{btn}}</button>
     </div>
     <div v-if="isOpen" class="d-flex align-items-center justify-content-center pb-4 mb-2 pt-2" style="border-bottom: 1px solid; background: rgb(217, 217, 217);">
-      <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isInformation}" @click="selectSubCategory('info')">Информация</p>
-      <p class="link-btn m-0" :class="{'link-btn-active': isRevenue}" @click="selectSubCategory('revenue')">Доходы</p>
+      <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isInformation}" @click="selectSubCategory('info')" v-if="user.role === 'admin' || user.role === 'employee_reg' || user.role === 'moderator_reg'">Информация</p>
+      <p class="link-btn m-0" :class="{'link-btn-active': isRevenue}" @click="selectSubCategory('revenue')" v-if="user.role === 'admin' || user.role === 'revenue-employee_owners' || user.role === 'moderator_owners' || user.role === 'revenue-employee_reg'">Доходы</p>
     </div>
     <div v-if="isInformation">
       <div v-if="isOpen && !data.hasOwnProperty('secondary_object_number')">
@@ -56,9 +56,9 @@
         <p v-if="!!data.real_estate_purpose">Целевое назначение земельного участка: <b v-if="!isEdit">{{data.real_estate_purpose}}</b><input v-else type="text" class="form-control" :placeholder="data.real_estate_purpose"></p>
       </div>
     </div>
-    <div v-if="isOpen && user.role === 'admin'" class="actions mt-3 d-flex justify-content-between mb-3">
-      <button class="btn btn-outline-danger" @click="deleteItem()">Удалить</button>
-      <button class="btn btn-primary" @click="editItem()"><span v-if="isEdit">Сохранить</span><span v-else>Редактировать</span></button>
+    <div v-if="isOpen" class="actions mt-3 d-flex justify-content-between mb-3">
+      <button class="btn btn-outline-danger" @click="deleteItem(user.role)">Удалить</button>
+      <button class="btn btn-primary" @click="editItem(user.role)"><span v-if="isEdit">Сохранить</span><span v-else>Редактировать</span></button>
     </div>
   </div>
 </template>
@@ -123,55 +123,57 @@ export default {
     function getAddress(address){
       return address.replace("кв.", "").split(',').reverse()[0]
     }
-    async function deleteItem(){
-      let isUninhabitedPremiseTwos = false, id = props.data.id
-      if(Object.prototype.hasOwnProperty.call(props.data, 'secondary_object_number')){
-        isUninhabitedPremiseTwos = true
-        id = props.data.business_id
-      }
-      await store.dispatch('deleteItem', {url: 'legal-entities', id, isUninhabitedPremiseTwos}).then(() => {
-        editForm.value = {
-          name: '',
-          apartment: '',
-
-          bussines_id: '',
-          taxation_regime: '',
-          brand_crm: '',
-          year_release_crm: '',
-          factory_number_crm: '',
-          registration_number_crm: '',
-          date_registration_crm: '',
-          date_de_registration_crm: '',
-          place_registration_crm: '',
-          license_information: '',
-          type_activity: '',
-          address_point_sale_crm: '',
-
-          secondary_object_number: '',
-          admin_code: '',
-          full_name: '',
-          ownership: '',
-          share: '',
-          total_area: '',
-          number_title_document: '',
-          name_title_document: '',
-          date_title_document: '',
-          date_registration: '',
-          cadastral_number: '',
-          type_property: '',
-          real_estate_purpose: '',
-          name_legal_entity: '',
-          transaction_amount: '',
-          share_property: ''
+    async function deleteItem(role){
+      if(role === 'admin'){
+        let isUninhabitedPremiseTwos = false, id = props.data.id
+        if(Object.prototype.hasOwnProperty.call(props.data, 'secondary_object_number')){
+          isUninhabitedPremiseTwos = true
+          id = props.data.business_id
         }
-        isEdit.value = false
-      })
+        await store.dispatch('deleteItem', {url: 'legal-entities', id, isUninhabitedPremiseTwos}).then(() => {
+          editForm.value = {
+            name: '',
+            apartment: '',
+
+            bussines_id: '',
+            taxation_regime: '',
+            brand_crm: '',
+            year_release_crm: '',
+            factory_number_crm: '',
+            registration_number_crm: '',
+            date_registration_crm: '',
+            date_de_registration_crm: '',
+            place_registration_crm: '',
+            license_information: '',
+            type_activity: '',
+            address_point_sale_crm: '',
+
+            secondary_object_number: '',
+            admin_code: '',
+            full_name: '',
+            ownership: '',
+            share: '',
+            total_area: '',
+            number_title_document: '',
+            name_title_document: '',
+            date_title_document: '',
+            date_registration: '',
+            cadastral_number: '',
+            type_property: '',
+            real_estate_purpose: '',
+            name_legal_entity: '',
+            transaction_amount: '',
+            share_property: ''
+          }
+          isEdit.value = false
+        })
+      }
     }
-    async function editItem(){
+    async function editItem(role){
       if(!isEdit.value){
         isEdit.value = true
         return
-      } else {
+      } else if(role === 'admin'){
         let isLegalEdit = false //, params = {}
         for(let key in editForm.value){
           if(editForm.value[key] !== '' && key !== 'id'){

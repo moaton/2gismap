@@ -15,7 +15,9 @@ export default createStore({
         lat: null,
         lng: null
       }
-    }
+    },
+    isOwner: true,
+    isRegistered: true
   },
   actions: {
     async auth({commit}, payload){
@@ -34,7 +36,9 @@ export default createStore({
       } else {
         commit('setExistUserStatus', false)
         commit('setIncorrectStatus', false)
-        commit('setUser', res.user)
+        if(!payload.isReg){
+          commit('setUser', res.user)
+        }
       }
       return 'success'
     },
@@ -106,7 +110,18 @@ export default createStore({
         commit('setErrorData', {no_data: 'Ошибка сервера', })
         return true
       }
-    }
+    },
+    async getItemsByCategory({state, commit}, payload){
+      try {
+        let res = await fetch(`${URL}/api/legal-entities?lat=${state.coordinates.latlng.lat.toFixed(6)}&lon=${state.coordinates.latlng.lng.toFixed(6)}`)
+        commit('setErrorData', {no_data: 'Нет данных', })
+        return true
+      } catch (error) {
+        commit('setNullData')
+        commit('setErrorData', {no_data: 'Ошибка сервера', })
+        return true
+      }
+    },
   },
   mutations: {
     deleteItem(state, payload){
@@ -168,7 +183,7 @@ export default createStore({
       })
     },
     setErrorData(state, payload){
-      state.legalEntities.items.push(payload)
+      state.legalEntities.items = [payload]
     },
     setNullData(state){
       state.legalEntities.items = []
@@ -182,6 +197,12 @@ export default createStore({
     },
     setUser(state, payload){
       state.user = payload
+    },
+    setIsRegistered(state, payload){
+      state.isRegistered = payload
+    },
+    setIsOwner(state, payload){
+      state.isOwner = payload
     }
   },
   getters: {
@@ -191,6 +212,12 @@ export default createStore({
     getUser: state => {
       return state.user
     },
+    getIsRegistered: state => {
+      return state.isRegistered
+    },
+    getIsOwner: state => {
+      return state.isOwner
+    },
     getExistUserStatus: state => {
       return state.existUser
     },
@@ -198,6 +225,4 @@ export default createStore({
       return state.incorrect
     },
   },
-  modules: {
-  }
 })

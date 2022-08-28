@@ -6,8 +6,8 @@
     </div>
     <div>
       <div class="d-flex align-items-center justify-content-center pb-4 mb-2 pt-2" style="border-bottom: 1px solid; background: rgb(236, 236, 236);">
-        <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isOwner}" @click="selectCategory('owner')">Собственники</p>
-        <p class="link-btn m-0" :class="{'link-btn-active': isRegistered}" @click="selectCategory('registred')">Зарегестрированные</p>
+        <p class="link-btn m-0 mr-2" :class="{'link-btn-active': isOwner}" @click="selectCategory('owner')" v-if="user.role !== 'employee_reg' && user.role !== 'moderator_reg' && user.role !== 'revenue-employee_reg'">Собственники</p>
+        <p class="link-btn m-0" :class="{'link-btn-active': isRegistered}" @click="selectCategory('registred')" v-if="user.role !== 'employee_owners' && user.role !== 'moderator_owners' && user.role !== 'revenue-employee_owners'">Зарегестрированные</p>
       </div>
       <div v-if="user.role === 'admin'" style="text-align: left;padding: 5px 15px;padding-bottom: 10px;border-radius: 0.25rem;border-bottom: 1px solid;background: #ececec;">
         <button class="btn btn-outline-success" @click="addBlock = !addBlock">Добавить</button>
@@ -90,12 +90,14 @@
           </form>
         </div>
       </div>
-      <div v-if="dataTo.items.length === 0 || isloading" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div v-if="isloading" class="mt-4" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <div class="spinner-border mb-3" role="status"></div>
         <h4>Загрузка данных...</h4>
       </div>
-      <div v-for="data in dataTo.items" :key="data.id" v-else>
-        <detailes :data="data"></detailes>
+      <div v-if="dataTo.items.length !== 0 && !isloading">
+        <div v-for="data in dataTo.items" :key="data.id">
+          <detailes :data="data"></detailes>
+        </div>
       </div>
     </div>
   </div>
@@ -111,12 +113,15 @@ export default {
     detailes
   },
   computed: {
-    getLegalData(){
-      return store.getters.getLegalDate
-    },
     user(){
       return store.getters.getUser
     },
+    isOwner(){
+      return store.getters.getIsOwner
+    },
+    isRegistered(){
+      return store.getters.getIsRegistered
+    }
   },
   watch: {
     dataTo(){
@@ -259,28 +264,28 @@ export default {
         })
       // }
     }
-    let isRegistered = ref(true), isOwner = ref(true)
     function selectCategory(category){
       switch (category) {
         case 'owner':
-          if(!isOwner.value || isRegistered.value === isOwner.value) {
-            isRegistered.value = false
-            isOwner.value = true
+          if(!store.getters.getIsOwner || store.getters.getIsRegistered === store.getters.getIsOwner) {
+            store.commit('setIsRegistered', false)
+            store.commit('setIsOwner', true)
           } else {
-            isRegistered.value = true
-            isOwner.value = true
+            store.commit('setIsRegistered', true)
+            store.commit('setIsOwner', true)
           }
           break;
         case 'registred':
-          if(!isRegistered.value || isRegistered.value === isOwner.value){
-            isRegistered.value = true
-            isOwner.value = false
+          if(!store.getters.getIsRegistered || store.getters.getIsRegistered === store.getters.getIsOwner){
+            store.commit('setIsRegistered', true)
+            store.commit('setIsOwner', false)
           } else {
-            isRegistered.value = true
-            isOwner.value = true
+            store.commit('setIsRegistered', true)
+            store.commit('setIsOwner', true)
           }
           break;
       }
+      emit('getitemscategory')
     }
     return {
       addItem,
@@ -291,8 +296,6 @@ export default {
       addUnhabbited,
       unhabitted,
       selectCategory,
-      isOwner,
-      isRegistered
     }
   }
 }
