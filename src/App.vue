@@ -57,6 +57,12 @@ body{
 .d-block{
   display: block !important;
 }
+.leaflet-top .leaflet-left{
+  display: none;
+}
+.leaflet-top .leaflet-right{
+  display: none;
+}
 @media(min-width: 768px) {
   .show{
     height: 100%;

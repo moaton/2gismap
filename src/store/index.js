@@ -122,6 +122,18 @@ export default createStore({
         return true
       }
     },
+    async verifyFile({commit}, payload){
+      let res = await fetch(`${URL}/api/legal-entities?verify_file=true`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({data: payload}) 
+      })
+    },
+    async search({commit}, payload){
+
+    }
   },
   mutations: {
     deleteItem(state, payload){

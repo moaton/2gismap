@@ -5,14 +5,24 @@
     <div class="user__added" :class="{'user__added-show': isUserAdded}">
       <p class="m-0">Пользователь добавлен</p>
     </div>
-    <div class="add__user-btn" v-if="user.role === 'admin'">
-      <button class="btn btn-warning" @click="addUser=!addUser">
-        <i class="bi bi-person-plus-fill"></i>
+    <div class="add__user-btn d-flex flex-column align-items-end" >
+      <button class="btn btn-warning mb-3" @click="addUser=!addUser" v-if="user.role === 'admin'" style="width:42px">
+        <i class="bi bi-person-plus"></i>
       </button>
+      <button class="btn btn-warning mb-3" @click="addData=!addData" v-if="user.role === 'admin' || user.role === 'moderator-data'">
+        <i class="bi bi-file-earmark-arrow-up"></i>
+      </button>
+      <div class="d-flex align-items-center mb-3">
+        <input type="text" class="form-control without-shadow" :class="{'search-open': search, 'search-close': !search}" v-model="query" placeholder="Найти...">
+        <button class="btn btn-warning without-shadow" :class="{'search-btn-open': search}" @click="onSearch">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+
     </div>
-    <div v-if="addUser" class="add__user-back">
+    <div v-if="addUser || addData" class="add__user-back">
       <div class="add__user">
-        <auth :adduser="true" v-click-outside="closeAddUser" @close="closeAddUser" @authed="added"></auth>
+        <auth :adduser="addUser" :adddata="addData" v-click-outside="closeModal" @close="closeModal" @authed="added"></auth>
       </div>
     </div>
   </div>
@@ -73,13 +83,25 @@ export default {
     //   dataTo: {},
     // })
     let legalEntities = ref({items: [], address: ''})
-    let isOpen = ref(false), isLoading = ref(false), addUser = ref(false)
+    let isOpen = ref(false), isLoading = ref(false), 
+    addUser = ref(false), addData = ref(false), search = ref(false),
+    query = ref('')
+    function onSearch(){
+      if(!search.value){
+        search.value = true
+      } else if(query.value === ''){
+        search.value = false
+      } else {
+        store.dispatch('search', search.value)
+      }
+    }
     function closeBottomMenu(){
       isOpen.value = false
       store.commit('setCoordinates', {latlng: {lat: null, lng: null}})
     }
-    function closeAddUser(){
+    function closeModal(){
       addUser.value = false
+      addData.value = false
     }
     let isUserAdded = ref(false)
     function added(){
@@ -136,12 +158,16 @@ export default {
       isOpen,
       closeBottomMenu,
       reload,
-      closeAddUser,
+      closeModal,
       addUser,
       added,
       isUserAdded,
       getItemsCategory,
       isLoading,
+      addData,
+      search,
+      query,
+      onSearch,
     }
   }
 }
@@ -167,7 +193,7 @@ export default {
   }
   .add__user-btn{
     position: absolute; 
-    top: 15%; 
+    top: 10%; 
     right: 10px;
   }
   .user__added {
@@ -183,5 +209,19 @@ export default {
   }
   .user__added-show{
     top: 0;
+  }
+  .search-btn-open{
+    border-radius: 0 0.25rem 0.25rem 0
+  }
+  .search-open{
+    border-radius: 0.25rem 0 0 0.25rem;
+  }
+  .search-close{
+    width: 0;
+    padding: 0;
+    border: none;
+  }
+  .without-shadow{
+    box-shadow: none !important;
   }
 </style>

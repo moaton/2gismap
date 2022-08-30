@@ -1,56 +1,67 @@
 <template>
   <div class="col-12 justify-content-center align-items-center pt-4 pb-4">
-    <div class="auth-card p-2" :class="{'col-md-4 offset-md-4': !adduser}">
-      <h4 v-if="adduser" class="mb-4" style="position:relative;padding:0 16px">
-        <span>Добавить пользователя</span>
+    <div class="auth-card p-2" :class="{'col-md-4 offset-md-4': !adduser && !adddata}">
+      <h4 v-if="adduser || adddata" class="mb-4" style="position:relative;padding:0 16px">
+        <span v-if="adduser">Добавить пользователя</span>
+        <span v-else>Загрузить данные</span>
         <span style="position: absolute; top: 0; right: 0;cursor:pointer" @click="$emit('close')">X</span>
       </h4>
-      <div v-if="!adduser" class="auth-title d-flex justify-content-center">
+      <div v-if="!adduser && !adddata" class="auth-title d-flex justify-content-center">
         <p>Авторизация</p>
       </div>
       <form @submit.prevent="onSubmit">
-        <div v-if="type === 'auth' && !adduser" class="mt-3">
+        <div v-if="type === 'auth' && !adduser && !adddata" class="mt-3">
           <span class="text-danger" v-if="isIncorrect">Username or password is not correct</span>
           <input v-model="form.username" class="form-control mt-3" :class="{'border-danger': isIncorrect}" type="text" placeholder="Имя пользователя">
           <input v-model="form.password" class="form-control mt-3" :class="{'border-danger': isIncorrect}" type="password" placeholder="Пароль">
         </div>
         <div v-else>
-          <p class="mt-3 text-left text-secondary">Данные для входа</p>
-          <div>
-            <span class="text-danger" v-if="isExist">The user has been created</span>
-            <label for="username">
-              <input id="username" :disabled="adding" v-model="form.username" class="" :class="{'border-danger': isExist}" type="text" placeholder="Имя пользователя">
-              <span>Имя пользователя</span>
-            </label>
-            <label for="password">
-              <input id="password" :disabled="adding" v-model="form.password" class="" type="password" placeholder="Пароль">
-              <span>Пароль</span>
-            </label>
-            <label for="password_repeat">
-              <input id="password_repeat" :disabled="adding" v-model="form.password_repeat" class="" type="password" placeholder="Повторите пароль">
-              <span>Повторите пароль</span>
-            </label>
+          <div v-if="adduser">            
+            <p class="mt-3 text-left text-secondary">Данные для входа</p>
+            <div>
+              <span class="text-danger" v-if="isExist">The user has been created</span>
+              <label for="username">
+                <input id="username" :disabled="adding" v-model="form.username" class="" :class="{'border-danger': isExist}" type="text" placeholder="Имя пользователя">
+                <span>Имя пользователя</span>
+              </label>
+              <label for="password">
+                <input id="password" :disabled="adding" v-model="form.password" class="" type="password" placeholder="Пароль">
+                <span>Пароль</span>
+              </label>
+              <label for="password_repeat">
+                <input id="password_repeat" :disabled="adding" v-model="form.password_repeat" class="" type="password" placeholder="Повторите пароль">
+                <span>Повторите пароль</span>
+              </label>
+            </div>
+            <p class="mt-3 mb-0 text-left text-secondary">Личная информация</p>
+            <div>
+              <label for="name">
+                <input id="name" :disabled="adding" v-model="form.name" type="text" placeholder="Имя">
+                <span>Имя</span>
+              </label>
+              <label for="surname">
+                <input id="surname" :disabled="adding" v-model="form.surname" type="text" placeholder="Фамилия">
+                <span>Фамилия</span>
+              </label>
+              <label for="phone">
+                <input id="phone" :disabled="adding" v-model="form.phone" type="tel" placeholder="+71234567890">
+                <span>Номер телефона</span>
+              </label>
+              <treeselect class="text-input" id="post" v-model="value" :options="options" :searchable="false" :clearable="false" :default-expand-level="1"></treeselect>
+              <label class="label" for="post">Должность: {{getPost}}</label>
+            </div>
           </div>
-          <p class="mt-3 mb-0 text-left text-secondary">Личная информация</p>
-          <div>
-            <label for="name">
-              <input id="name" :disabled="adding" v-model="form.name" type="text" placeholder="Имя">
-              <span>Имя</span>
-            </label>
-            <label for="surname">
-              <input id="surname" :disabled="adding" v-model="form.surname" type="text" placeholder="Фамилия">
-              <span>Фамилия</span>
-            </label>
-            <label for="phone">
-              <input id="phone" :disabled="adding" v-model="form.phone" type="tel" placeholder="+71234567890">
-              <span>Номер телефона</span>
-            </label>
-            <treeselect class="text-input" id="post" v-model="value" :options="options" :searchable="false" :clearable="false" :default-expand-level="1"></treeselect>
-            <label class="label" for="post">Должность: {{getPost}}</label>
+          <div v-if="adddata">
+            <span class="d-block text-left text-secondary">Категория</span>
+            <treeselect class="text-input" v-model="category" :options="optionsCategory" :searchable="false" :clearable="false" :default-expand-level="1"></treeselect>
+            <div class="custom-file mt-3">
+              <input type="file" class="custom-file-input" id="customFile" accept=".csv" @change="onFileChange">
+              <label class="custom-file-label" for="customFile">Выберите файл CSV</label>
+            </div>
           </div>
         </div>
         <div class="d-flex justify-content-end">
-          <button class="btn btn-outline-primary mt-3"><span v-if="type === 'auth' && !adduser">Войти</span><span v-else>Сохранить</span></button>
+          <button class="btn btn-outline-primary mt-3"><span v-if="type === 'auth' && !adduser && adddata">Войти</span><span v-else>Сохранить</span></button>
         </div>
       </form>
     </div>
@@ -59,9 +70,9 @@
 
 <script>
 import store from '../store'
-
+// import Papa from 'papaparse'
 export default {
-  props: ['adduser'],
+  props: ['adduser', 'adddata'],
   data() {
     return {
       type: 'auth',
@@ -110,7 +121,12 @@ export default {
           ]
         }
       ],
-      adding: false
+      adding: false,
+      category: 'owners',
+      optionsCategory: [
+        {id: 'owners', label: 'Собственники'},
+        {id: 'registered', label: 'Зарегистрированные'}
+      ]
     }
   },
   computed: {
@@ -125,6 +141,27 @@ export default {
     }
   },
   methods: {
+    onFileChange(e){
+      var files = e.target.files || e.dataTransfer.files
+      if (!files.length)
+        return
+      this.getBase64(files[0])
+      // var data = Papa.parse(files[0]);
+      // store.dispatch('verifyFile', data)
+    },
+    getBase64(file) {
+      let data = ''
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        console.log(reader.result,'reader.resultreader.result');
+        store.dispatch('verifyFile', reader.result)
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+      return data
+    },
     getPostMethod(){
       if(this.value.includes('_')){
         let parent = this.value.split('_')[0]
@@ -210,7 +247,13 @@ label > span{
 }
 label:focus-within > span,
 input:not(:placeholder-shown) + span{
-    color:#007bff;
-    transform:translateY(0px);
+  color:#007bff;
+  transform:translateY(0px);
+}
+.custom-file-label{
+  text-align: left;
+}
+.custom-file-label::after{
+  content: "Выбрать";
 }
 </style>
